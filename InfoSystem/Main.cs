@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace InfoSystem
 {
-    public partial class Form1 : Form
+    public partial class Main : Form
     {
-        public Form1()
+        public Main()
         {
             StringBuilder sb = new StringBuilder();
             InitializeComponent();
@@ -35,7 +35,13 @@ namespace InfoSystem
                 sb.AppendLine($"主板总内存插槽数：{HardwareInfo.GetPhysicalMemorySlots() + Environment.NewLine}");
                 // 内存信息
                 sb.AppendLine($"内存详情信息：");
-                sb.AppendLine($"{HardwareInfo.GetPhysicalMemory() + Environment.NewLine}");
+                sb.AppendLine($"{HardwareInfo.GetPhysicalMemory()}");
+                // 分区
+                sb.AppendLine($"分区详情信息：");
+                sb.AppendLine($"{HardwareInfo.GetLogicalDiskPartition()}");
+                // 硬盘
+                sb.AppendLine($"硬盘详情信息：");
+                sb.AppendLine($"{HardwareInfo.GetDiskDriveInfo()}");
                 
 
 

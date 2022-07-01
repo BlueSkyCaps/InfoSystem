@@ -26,21 +26,59 @@ public static class HardwareInfo
         return Id;
 
     }
-    ///
-    /// Retrieving HDD Serial No.
-    /// 
-    /// 
-    public static String GetHDDSerialNo()
+    /// <summary>
+    /// 盘符分区
+    /// </summary>
+    /// <returns></returns>
+    public static String GetLogicalDiskPartition()
     {
         ManagementClass mangnmt = new ManagementClass("Win32_LogicalDisk");
         ManagementObjectCollection mcol = mangnmt.GetInstances();
-        string result = "";
+        StringBuilder sb = new StringBuilder();
+        uint i = 1;
         foreach (ManagementObject strt in mcol)
         {
-            result += Convert.ToString(strt["VolumeSerialNumber"]);
+            var serialNumber = Convert.ToString(strt["VolumeSerialNumber"]);
+            // 盘符名称
+            var n = strt["Name"];
+            // 磁盘类型
+            var d = strt["Description"];
+            // 文件系统(分区类型、格式)
+            var fs = strt["FileSystem"];
+            // 可用空间
+            var fr = Convert.ToInt64(strt["FreeSpace"]) /1024 / 1024 / 1024;
+            // 总空间
+            var s = Convert.ToInt64(strt["Size"]) / 1024 / 1024 / 1024;
+            sb.AppendLine($"盘符{n}>>{d}, 文件系统{fs}, 可用空间{fr}GB, 总空间{s}GB");
+            i++;
         }
-        return result;
+        return sb.ToString();
     }
+
+
+    /// <summary>
+    /// 硬盘信息
+    /// </summary>
+    /// <returns></returns>
+    public static String GetDiskDriveInfo()
+    {
+        ManagementClass mangnmt = new ManagementClass("Win32_DiskDrive");
+        ManagementObjectCollection mcol = mangnmt.GetInstances();
+        StringBuilder sb = new StringBuilder();
+        uint i = 1;
+        foreach (ManagementObject mo in mcol)
+        {
+            var m = mo["Model"];
+            var size = Convert.ToInt64(mo["Size"]);
+            var sn = mo["SerialNumber"];
+            var it = mo["InterfaceType"];
+            sb.AppendLine($"序号{i}>>{m}, {size / 1024 / 1024 / 1024}GB, 序列号{sn}, {it}");
+            i++;
+        }
+        return sb.ToString();
+    }
+
+
     ///
     /// Retrieving System MAC Address.
     /// 
@@ -63,7 +101,7 @@ public static class HardwareInfo
         return MACAddress;
     }
     ///
-    /// Retrieving Motherboard Manufacturer.
+    /// 获取主板信息
     /// 
     /// 
     public static string GetBoardMaker()
@@ -134,7 +172,7 @@ public static class HardwareInfo
 
     }
     ///
-    /// Retrieving BIOS Caption.
+    /// BIOS信息
     /// 
     /// 
     public static string GetBIOScaption()
@@ -178,7 +216,6 @@ public static class HardwareInfo
     ///
     /// 获取内存信息
     /// 
-    /// 
     public static string GetPhysicalMemory()
     {
         ManagementScope oMs = new ManagementScope();
@@ -218,10 +255,11 @@ public static class HardwareInfo
         }
         return $"{installedMemSize / 1024 / 1024 / 1024}GB";
     }
-    ///
+
+    /// <summary>
     /// 获取主板内存插槽数
-    /// 
-    /// 
+    /// </summary>
+    /// <returns></returns>
     public static string GetPhysicalMemorySlots()
     {
 
@@ -238,56 +276,7 @@ public static class HardwareInfo
         var info = MemSlots+"个内存插槽数";
         return MemSlots.ToString();
     }
-    //Get CPU Temprature.
-    ///
-    /// method for retrieving the CPU Manufacturer
-    /// using the WMI class
-    /// 
-    /// CPU Manufacturer
-    public static string GetCPUManufacturer()
-    {
-        string cpuMan = String.Empty;
-        //create an instance of the Managemnet class with the
-        //Win32_Processor class
-        ManagementClass mgmt = new ManagementClass("Win32_Processor");
-        //create a ManagementObjectCollection to loop through
-        ManagementObjectCollection objCol = mgmt.GetInstances();
-        //start our loop for all processors found
-        foreach (ManagementObject obj in objCol)
-        {
-            if (cpuMan == String.Empty)
-            {
-                // only return manufacturer from first CPU
-                cpuMan = obj.Properties["Manufacturer"].Value.ToString();
-            }
-        }
-        return cpuMan;
-    }
-    ///
-    /// method to retrieve the CPU's current
-    /// clock speed using the WMI class
-    /// 
-    /// Clock speed
-    //public static int GetCPUCurrentClockSpeed()
-    //{
-    //    int cpuClockSpeed = 0;
-    //    //create an instance of the Managemnet class with the
-    //    //Win32_Processor class
-    //    ManagementClass mgmt = new ManagementClass("Win32_Processor");
-    //    //create a ManagementObjectCollection to loop through
-    //    ManagementObjectCollection objCol = mgmt.GetInstances();
-    //    //start our loop for all processors found
-    //    foreach (ManagementObject obj in objCol)
-    //    {
-    //        if (cpuClockSpeed == 0)
-    //        {
-    //            // only return cpuStatus from first CPU
-    //            cpuClockSpeed = Convert.ToInt32(obj.Properties["CurrentClockSpeed"].Value.ToString());
-    //        }
-    //    }
-    //    //return the status
-    //    return cpuClockSpeed;
-    //}
+
     ///
     /// method to retrieve the network adapters
     /// default IP gateway using WMI
@@ -326,10 +315,11 @@ public static class HardwareInfo
         //return the mac address
         return gateway;
     }
-    ///
-    /// Retrieve CPU Speed.
-    /// 
-    /// 
+
+    /// <summary>
+    /// cpu时钟频率
+    /// </summary>
+    /// <returns></returns>
     public static double? GetCpuSpeedInGHz()
     {
         double? GHz = null;
@@ -365,11 +355,11 @@ public static class HardwareInfo
 
         }
 
-        return "BIOS Maker: Unknown";
+        return "Unknown";
 
     }
     ///
-    /// Retrieving Current Language.
+    /// 获取操作系统信息.
     /// 
     /// 
     public static string GetOSInformation()
@@ -388,7 +378,7 @@ public static class HardwareInfo
         return "(Win32_OperatingSystem)Unknown";
     }
     ///
-    /// Retrieving Processor Information.
+    /// 获取处理器信息
     /// 
     /// 
     public static String GetProcessorInformation()
@@ -408,7 +398,7 @@ public static class HardwareInfo
         return info;
     }
     ///
-    /// Retrieving Computer Name.
+    /// 获取计算机名
     /// 
     /// 
     public static String GetComputerName()
