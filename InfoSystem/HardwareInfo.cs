@@ -175,7 +175,6 @@ public static class HardwareInfo
             catch { }
         }
         return stringBuilder.ToString(); 
-
     }
 
     /// <summary>
@@ -185,7 +184,7 @@ public static class HardwareInfo
     public static string GetPhysicalMemory()
     {
         ManagementScope oMs = new ManagementScope();
-        ObjectQuery oQuery = new ObjectQuery("SELECT Capacity,ConfiguredClockSpeed,Manufacturer,Caption FROM Win32_PhysicalMemory");
+        ObjectQuery oQuery = new ObjectQuery("SELECT * FROM Win32_PhysicalMemory");
         ManagementObjectSearcher oSearcher = new ManagementObjectSearcher(oMs, oQuery);
         ManagementObjectCollection oCollection = oSearcher.Get();
 
@@ -193,10 +192,22 @@ public static class HardwareInfo
         uint i = 1;
         foreach (ManagementObject obj in oCollection)
         {
-            var indexSize = Convert.ToInt64(obj["Capacity"]);
-            var m = obj["Manufacturer"];
-            var c = obj["Caption"];
-            sb.AppendLine($"序号{i}>>{indexSize / 1024 / 1024 / 1024}GB, {obj["ConfiguredClockSpeed"]}MHz, {m}, {c}");
+
+            var indexSize = Convert.ToInt64(obj.GetPropertyValue("Capacity"));
+            var m = obj.GetPropertyValue("Manufacturer");
+            var c = obj.GetPropertyValue("Caption");
+            object s;
+            try
+            {
+                // 时钟频率属性在虚拟机测试环境下可能无法获取
+                s = obj.GetPropertyValue("ConfiguredClockSpeed")+ "MHz";
+            }
+            catch (Exception)
+            {
+                s = "频率未知";
+            }
+            
+            sb.AppendLine($"序号{i}>>{indexSize / 1024 / 1024 / 1024}GB, {s}, {m}, {c}");
             sb.AppendLine();
             i++;
         }
@@ -211,7 +222,7 @@ public static class HardwareInfo
     public static string GetPhysicalMemoryCapacity()
     {
         ManagementScope oMs = new ManagementScope();
-        ObjectQuery oQuery = new ObjectQuery("SELECT Capacity FROM Win32_PhysicalMemory");
+        ObjectQuery oQuery = new ObjectQuery("SELECT * FROM Win32_PhysicalMemory");
         ManagementObjectSearcher oSearcher = new ManagementObjectSearcher(oMs, oQuery);
         ManagementObjectCollection oCollection = oSearcher.Get();
 
@@ -232,7 +243,7 @@ public static class HardwareInfo
 
         int MemSlots = 0;
         ManagementScope oMs = new ManagementScope();
-        ObjectQuery oQuery2 = new ObjectQuery("SELECT MemoryDevices FROM Win32_PhysicalMemoryArray");
+        ObjectQuery oQuery2 = new ObjectQuery("SELECT * FROM Win32_PhysicalMemoryArray");
         ManagementObjectSearcher oSearcher2 = new ManagementObjectSearcher(oMs, oQuery2);
         ManagementObjectCollection oCollection2 = oSearcher2.Get();
         foreach (ManagementObject obj in oCollection2)
@@ -308,6 +319,35 @@ public static class HardwareInfo
             i++;
         }
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// 获取显卡信息
+    /// </summary>
+    /// <returns></returns>
+    public static string GetDisplayAdapters()
+    {
+
+        ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_VideoController");
+        StringBuilder stringBuilder = new StringBuilder();
+        uint i = 1;
+        foreach (ManagementObject wmi in searcher.Get())
+        {
+            
+            
+                var n = wmi.GetPropertyValue("Name")?.ToString();
+                var ram = Convert.ToInt64(wmi.GetPropertyValue("AdapterRAM")) / 1024 / 1024 / 1024;
+                var chr = wmi.GetPropertyValue("CurrentHorizontalResolution");
+                var cvr = wmi.GetPropertyValue("CurrentVerticalResolution");
+                var cr = wmi.GetPropertyValue("CurrentRefreshRate");
+                var minR = wmi.GetPropertyValue("MinRefreshRate");
+                var maxR = wmi.GetPropertyValue("MaxRefreshRate");
+                var dv = wmi.GetPropertyValue("DriverVersion");
+                stringBuilder.AppendLine($"序号{i}>>{n}, {ram}GB RAM, 分辨率{chr}x{cvr}, 刷新率{cr}Hz, 最大可设刷新率{maxR}, 最小可设刷新率{minR}, 驱动版本{dv}");
+                stringBuilder.AppendLine();
+                        
+        }
+        return stringBuilder.ToString();
     }
 
     /// <summary>
