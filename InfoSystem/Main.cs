@@ -94,6 +94,10 @@ namespace InfoSystem
             sb.AppendLine($"{HardwareInfo.GetDisplayAdapters()}");
             sb.AppendLine("-----------------------");
 
+            // 声卡
+            sb.AppendLine($"声卡信息：");
+            sb.AppendLine($"{HardwareInfo.GetSoundAdapters()}");
+
             new InfoWIn(sb.ToString(), this).ShowDialog();
         }
     }

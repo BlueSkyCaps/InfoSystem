@@ -33,7 +33,6 @@ public static class HardwareInfo
         ManagementClass mangnmt = new ManagementClass("Win32_LogicalDisk");
         ManagementObjectCollection mcol = mangnmt.GetInstances();
         StringBuilder sb = new StringBuilder();
-        uint i = 1;
         foreach (ManagementObject strt in mcol)
         {
             var serialNumber = Convert.ToString(strt["VolumeSerialNumber"]);
@@ -49,7 +48,6 @@ public static class HardwareInfo
             var s = Convert.ToInt64(strt["Size"]) / 1024 / 1024 / 1024;
             sb.AppendLine($"盘符{n}>>{d}, 文件系统{fs}, 可用空间{fr}GB, 总空间{s}GB");
             sb.AppendLine();
-            i++;
         }
         return sb.ToString();
     }
@@ -92,7 +90,8 @@ public static class HardwareInfo
         {
             try
             {
-                return wmi.GetPropertyValue("Manufacturer").ToString()+ ", "+wmi.GetPropertyValue("Product").ToString();
+                // 主板型号, 品牌
+                return wmi.GetPropertyValue("Product").ToString()+ ", "+wmi.GetPropertyValue("Manufacturer").ToString();
             }
 
             catch { }
@@ -140,8 +139,8 @@ public static class HardwareInfo
         {
             try
             {
-                // 品牌, BIOS型号
-                return wmi.GetPropertyValue("Manufacturer").ToString()+", "+wmi.GetPropertyValue("Caption").ToString();
+                // BIOS型号, 品牌
+                return wmi.GetPropertyValue("Name").ToString()+", "+wmi.GetPropertyValue("Manufacturer").ToString();
 
             }
             catch { }
@@ -251,7 +250,6 @@ public static class HardwareInfo
             MemSlots = Convert.ToInt32(obj["MemoryDevices"]);
 
         }
-        var info = MemSlots+"个内存插槽数";
         return MemSlots.ToString();
     }
 
@@ -333,19 +331,41 @@ public static class HardwareInfo
         uint i = 1;
         foreach (ManagementObject wmi in searcher.Get())
         {
-            
-            
-                var n = wmi.GetPropertyValue("Name")?.ToString();
-                var ram = Convert.ToInt64(wmi.GetPropertyValue("AdapterRAM")) / 1024 / 1024 / 1024;
-                var chr = wmi.GetPropertyValue("CurrentHorizontalResolution");
-                var cvr = wmi.GetPropertyValue("CurrentVerticalResolution");
-                var cr = wmi.GetPropertyValue("CurrentRefreshRate");
-                var minR = wmi.GetPropertyValue("MinRefreshRate");
-                var maxR = wmi.GetPropertyValue("MaxRefreshRate");
-                var dv = wmi.GetPropertyValue("DriverVersion");
-                stringBuilder.AppendLine($"序号{i}>>{n}, {ram}GB RAM, 分辨率{chr}x{cvr}, 刷新率{cr}Hz, 最大可设刷新率{maxR}, 最小可设刷新率{minR}, 驱动版本{dv}");
-                stringBuilder.AppendLine();
+            var n = wmi.GetPropertyValue("Name")?.ToString();
+            var ram = Convert.ToInt64(wmi.GetPropertyValue("AdapterRAM")) / 1024 / 1024 / 1024;
+            var chr = wmi.GetPropertyValue("CurrentHorizontalResolution");
+            var cvr = wmi.GetPropertyValue("CurrentVerticalResolution");
+            var cr = wmi.GetPropertyValue("CurrentRefreshRate");
+            var minR = wmi.GetPropertyValue("MinRefreshRate");
+            var maxR = wmi.GetPropertyValue("MaxRefreshRate");
+            var dv = wmi.GetPropertyValue("DriverVersion");
+            stringBuilder.AppendLine($"序号{i}>>{n}, {ram}GB RAM, 分辨率{chr}x{cvr}, 刷新率{cr}Hz, 最大可设刷新率{maxR}, 最小可设刷新率{minR}, 驱动版本{dv}");
+            stringBuilder.AppendLine();
+            i++;
                         
+        }
+        return stringBuilder.ToString();
+    }
+
+    /// <summary>
+    /// 获取声卡
+    /// </summary>
+    /// <returns></returns>
+    public static string GetSoundAdapters()
+    {
+
+        ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_SoundDevice");
+        StringBuilder stringBuilder = new StringBuilder();
+        uint i = 1;
+        foreach (ManagementObject wmi in searcher.Get())
+        {
+            var n = wmi.GetPropertyValue("Name")?.ToString();
+            var m = wmi.GetPropertyValue("Manufacturer")?.ToString();
+            var pn = wmi.GetPropertyValue("ProductName")?.ToString();
+            stringBuilder.AppendLine($"序号{i}>>{n}, {m}");
+            stringBuilder.AppendLine();
+            i++;
+
         }
         return stringBuilder.ToString();
     }
