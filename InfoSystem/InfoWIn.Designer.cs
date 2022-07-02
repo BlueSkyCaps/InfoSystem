@@ -41,7 +41,7 @@
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.ReadOnly = true;
             this.richTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.richTextBox1.Size = new System.Drawing.Size(884, 593);
+            this.richTextBox1.Size = new System.Drawing.Size(884, 712);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "@";
             // 
@@ -49,7 +49,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 593);
+            this.ClientSize = new System.Drawing.Size(884, 712);
             this.Controls.Add(this.richTextBox1);
             this.Name = "InfoWIn";
             this.Text = "信息";

@@ -50,6 +50,7 @@ public static class HardwareInfo
             // 总空间
             var s = Convert.ToInt64(strt["Size"]) / 1024 / 1024 / 1024;
             sb.AppendLine($"盘符{n}>>{d}, 文件系统{fs}, 可用空间{fr}GB, 总空间{s}GB");
+            sb.AppendLine();
             i++;
         }
         return sb.ToString();
@@ -73,33 +74,13 @@ public static class HardwareInfo
             var sn = mo["SerialNumber"];
             var it = mo["InterfaceType"];
             sb.AppendLine($"序号{i}>>{m}, {size / 1024 / 1024 / 1024}GB, 序列号{sn}, {it}");
+            sb.AppendLine();
             i++;
         }
         return sb.ToString();
     }
 
 
-    ///
-    /// Retrieving System MAC Address.
-    /// 
-    /// 
-    public static string GetMACAddress()
-    {
-        ManagementClass mc = new ManagementClass("Win32_NetworkAdapterConfiguration");
-        ManagementObjectCollection moc = mc.GetInstances();
-        string MACAddress = String.Empty;
-        foreach (ManagementObject mo in moc)
-        {
-            if (MACAddress == String.Empty)
-            {
-                if ((bool)mo["IPEnabled"] == true) MACAddress = mo["MacAddress"].ToString();
-            }
-            mo.Dispose();
-        }
-
-        MACAddress = MACAddress.Replace(":", "");
-        return MACAddress;
-    }
     ///
     /// 获取主板信息
     /// 
@@ -231,6 +212,7 @@ public static class HardwareInfo
             var m = obj["Manufacturer"];
             var c = obj["Caption"];
             sb.AppendLine($"序号{i}>>{indexSize / 1024 / 1024 / 1024}GB, {obj["ConfiguredClockSpeed"]}MHz, {m}, {c}");
+            sb.AppendLine();
             i++;
         }
         
@@ -282,38 +264,71 @@ public static class HardwareInfo
     /// default IP gateway using WMI
     /// 
     /// adapters default IP gateway
-    public static string GetDefaultIPGateway()
+    public static string GetNetworkAdapters()
     {
-        //create out management class object using the
-        //Win32_NetworkAdapterConfiguration class to get the attributes
-        //of the network adapter
         ManagementClass mgmt = new ManagementClass("Win32_NetworkAdapterConfiguration");
-        //create our ManagementObjectCollection to get the attributes with
         ManagementObjectCollection objCol = mgmt.GetInstances();
-        string gateway = String.Empty;
-        //loop through all the objects we find
-        foreach (ManagementObject obj in objCol)
+        
+        List<ManagementObject> objList = new List<ManagementObject>();
+        foreach (ManagementObject obj in objCol) 
         {
-            if (gateway == String.Empty)  // only return MAC Address from first card
-            {
-                //grab the value from the first network adapter we find
-                //you can change the string to an array and get all
-                //network adapters found as well
-                //check to see if the adapter's IPEnabled
-                //equals true
-                if ((bool)obj["IPEnabled"] == true)
-                {
-                    gateway = obj["DefaultIPGateway"].ToString();
-                }
-            }
-            //dispose of our object
-            obj.Dispose();
+            objList.Add(obj);
+            //var d = obj["Description"]?.ToString();
+            //var ipEnabled = obj["IPEnabled"];
+            //var gateway = obj["DefaultIPGateway"];
+            //var mac = obj["MACAddress"];
+            //var ip = obj["IPAddress"];
         }
-        //replace the ":" with an empty space, this could also
-        //be removed if you wish
-        gateway = gateway.Replace(":", "");
-        //return the mac address
-        return gateway;
+        objList = objList.OrderByDescending(o => (bool)o.Properties["IPEnabled"].Value == true).ToList();
+        StringBuilder sb = new StringBuilder();
+        uint i = 1;
+        foreach (ManagementObject obj in objList)
+        {
+            var d = obj["Description"]?.ToString();
+            var ipEnabled = obj["IPEnabled"];
+            var ip = obj["IPAddress"];
+            var gateway = obj["DefaultIPGateway"];
+            var mac = obj["MACAddress"];
+            if (ip!=null)
+            {
+                if (((string[])ip).Length > 1)
+                {
+                    ip = $"IP地址{((string[])ip)[0]}|{((string[])ip)[1]}";
+                }
+                else
+                {
+                    ip = $"IP地址{((string[])ip)[0]}";
+                }
+
+            }
+            else
+            {
+                ip = $"IP地址暂无";
+            }
+
+            if (gateway != null)
+            {
+                gateway = $"网关{((string[])gateway)[0]}";
+            }
+            else
+            {
+                gateway = $"网关暂无";
+            }
+
+            if (mac != null)
+            {
+                mac = $"MAC地址{mac}";
+
+            }
+            else
+            {
+                mac = $"MAC地址暂无";
+            }
+            sb.AppendLine($"序号{i}>>{d}, {ip}, {gateway}, {mac}");
+            sb.AppendLine();
+            i++;
+        }
+        return sb.ToString();
     }
 
     /// <summary>
