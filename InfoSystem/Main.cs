@@ -21,10 +21,17 @@ namespace InfoSystem
                 // 获取计算机名
                 sb.AppendLine($"计算机名称：{HardwareInfo.GetComputerName()+Environment.NewLine}");
                 sb.AppendLine("-----------------------");
+
                 // 操作系统
                 sb.AppendLine($"操作系统信息：");
                 sb.AppendLine($"{HardwareInfo.GetOSInformation() + Environment.NewLine}");
                 sb.AppendLine("-----------------------");
+                
+                // 计算机账户
+                sb.AppendLine($"账户列表：");
+                sb.AppendLine($"{HardwareInfo.GetAccountName()}");
+                sb.AppendLine("-----------------------");
+
 
                 // 处理器和时钟频率
                 sb.AppendLine($"处理器：");

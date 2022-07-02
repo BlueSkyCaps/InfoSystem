@@ -7,9 +7,7 @@ using System.Management;
 public static class HardwareInfo
 {
     ///
-    /// Retrieving Processor Id.
-    /// 
-    /// 
+    ///  Processor Id.
     /// 
     public static String GetProcessorId()
     {
@@ -24,8 +22,8 @@ public static class HardwareInfo
             break;
         }
         return Id;
-
     }
+
     /// <summary>
     /// 盘符分区
     /// </summary>
@@ -81,10 +79,10 @@ public static class HardwareInfo
     }
 
 
-    ///
+    /// <summary>
     /// 获取主板信息
-    /// 
-    /// 
+    /// </summary>
+    /// <returns></returns>
     public static string GetBoardMaker()
     {
 
@@ -100,13 +98,13 @@ public static class HardwareInfo
             catch { }
 
         }
-
         return "(Board)Unknown";
 
     }
+
+
     ///
-    /// Retrieving CD-DVD Drive Path.
-    /// 
+    /// CD-DVD Drive Path.
     /// 
     public static string GetCdRomDrive()
     {
@@ -128,34 +126,11 @@ public static class HardwareInfo
         return "CD ROM Drive Letter: Unknown";
 
     }
-    ///
-    /// Retrieving BIOS Serial No.
-    /// 
-    /// 
-    public static string GetBIOSserNo()
-    {
 
-        ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_BIOS");
-
-        foreach (ManagementObject wmi in searcher.Get())
-        {
-            try
-            {
-                return wmi.GetPropertyValue("SerialNumber").ToString();
-
-            }
-
-            catch { }
-
-        }
-
-        return "BIOS Serial Number: Unknown";
-
-    }
-    ///
+    /// <summary>
     /// BIOS信息
-    /// 
-    /// 
+    /// </summary>
+    /// <returns></returns>
     public static string GetBIOScaption()
     {
 
@@ -173,30 +148,40 @@ public static class HardwareInfo
         }
         return "(Win32_BIOS)Unknown";
     }
-    ///
-    /// Retrieving System Account Name.
-    /// 
-    /// 
+
+    /// <summary>
+    /// 获取账户名
+    /// </summary>
+    /// <returns></returns>
     public static string GetAccountName()
     {
 
         ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_UserAccount");
-
+        StringBuilder stringBuilder = new StringBuilder();
         foreach (ManagementObject wmi in searcher.Get())
         {
             try
             {
-
-                return wmi.GetPropertyValue("Name").ToString();
+                var n = wmi.GetPropertyValue("Name")?.ToString();
+                var la = (bool)wmi.GetPropertyValue("LocalAccount") ? "本地账户" : "非本地账户";
+                var des = wmi.GetPropertyValue("Description")?.ToString().TrimEnd('。').TrimEnd('.');
+                des = String.IsNullOrEmpty(des) ? "自定义账户" : des;
+                var dis = (bool)wmi.GetPropertyValue("Disabled")?"被禁用": "未禁用";
+                var pa = (bool)wmi.GetPropertyValue("PasswordChangeable") ? "可改密码" : "不可更改密码";
+                var dom = wmi.GetPropertyValue("Domain")?.ToString();
+                stringBuilder.AppendLine($"{n}>>{la}, {des}, {pa}, {dis}, 所在域(组织)为{dom}");
+                stringBuilder.AppendLine();
             }
             catch { }
         }
-        return "User Account Name: Unknown";
+        return stringBuilder.ToString(); 
 
     }
-    ///
+
+    /// <summary>
     /// 获取内存信息
-    /// 
+    /// </summary>
+    /// <returns></returns>
     public static string GetPhysicalMemory()
     {
         ManagementScope oMs = new ManagementScope();
@@ -219,10 +204,10 @@ public static class HardwareInfo
         return sb.ToString();
     }
 
-    ///
+    /// <summary>
     /// 获取已安装内存总量
-    /// 
-    /// 
+    /// </summary>
+    /// <returns></returns>
     public static string GetPhysicalMemoryCapacity()
     {
         ManagementScope oMs = new ManagementScope();
@@ -259,11 +244,10 @@ public static class HardwareInfo
         return MemSlots.ToString();
     }
 
-    ///
-    /// method to retrieve the network adapters
-    /// default IP gateway using WMI
-    /// 
-    /// adapters default IP gateway
+    /// <summary>
+    /// 获取网络适配器信息：名称，ip，网关，mac
+    /// </summary>
+    /// <returns></returns>
     public static string GetNetworkAdapters()
     {
         ManagementClass mgmt = new ManagementClass("Win32_NetworkAdapterConfiguration");
@@ -273,11 +257,6 @@ public static class HardwareInfo
         foreach (ManagementObject obj in objCol) 
         {
             objList.Add(obj);
-            //var d = obj["Description"]?.ToString();
-            //var ipEnabled = obj["IPEnabled"];
-            //var gateway = obj["DefaultIPGateway"];
-            //var mac = obj["MACAddress"];
-            //var ip = obj["IPAddress"];
         }
         objList = objList.OrderByDescending(o => (bool)o.Properties["IPEnabled"].Value == true).ToList();
         StringBuilder sb = new StringBuilder();
@@ -349,34 +328,12 @@ public static class HardwareInfo
         }
         return GHz;
     }
-    ///
-    /// Retrieving Current Language
-    /// 
-    /// 
-    public static string GetCurrentLanguage()
-    {
 
-        ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_BIOS");
 
-        foreach (ManagementObject wmi in searcher.Get())
-        {
-            try
-            {
-                return wmi.GetPropertyValue("CurrentLanguage").ToString();
-
-            }
-
-            catch { }
-
-        }
-
-        return "Unknown";
-
-    }
-    ///
-    /// 获取操作系统信息.
-    /// 
-    /// 
+    /// <summary>
+    /// 获取操作系统信息
+    /// </summary>
+    /// <returns></returns>
     public static string GetOSInformation()
     {
         ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem");
@@ -392,10 +349,11 @@ public static class HardwareInfo
         }
         return "(Win32_OperatingSystem)Unknown";
     }
-    ///
+
+    /// <summary>
     /// 获取处理器信息
-    /// 
-    /// 
+    /// </summary>
+    /// <returns></returns>
     public static String GetProcessorInformation()
     {
         ManagementClass mc = new ManagementClass("win32_processor");
@@ -412,10 +370,12 @@ public static class HardwareInfo
         }
         return info;
     }
-    ///
+
+
+    /// <summary>
     /// 获取计算机名
-    /// 
-    /// 
+    /// </summary>
+    /// <returns></returns>
     public static String GetComputerName()
     {
         ManagementClass mc = new ManagementClass("Win32_ComputerSystem");
