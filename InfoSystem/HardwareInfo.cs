@@ -331,7 +331,7 @@ public static class HardwareInfo
         uint i = 1;
         foreach (ManagementObject wmi in searcher.Get())
         {
-            var n = wmi.GetPropertyValue("Name")?.ToString();
+            var n = wmi.GetPropertyValue("Name")?.ToString().Replace("(TM)", "™").Replace("(tm)", "™").Replace("(R)", "®").Replace("(r)", "®").Replace("(C)", "©").Replace("(c)", "©");
             var ram = Convert.ToInt64(wmi.GetPropertyValue("AdapterRAM")) / 1024 / 1024 / 1024;
             var chr = wmi.GetPropertyValue("CurrentHorizontalResolution");
             var cvr = wmi.GetPropertyValue("CurrentVerticalResolution");
@@ -359,7 +359,7 @@ public static class HardwareInfo
         uint i = 1;
         foreach (ManagementObject wmi in searcher.Get())
         {
-            var n = wmi.GetPropertyValue("Name")?.ToString();
+            var n = wmi.GetPropertyValue("Name")?.ToString().Replace("(TM)", "™").Replace("(tm)", "™").Replace("(R)", "®").Replace("(r)", "®").Replace("(C)", "©").Replace("(c)", "©");
             var m = wmi.GetPropertyValue("Manufacturer")?.ToString();
             var pn = wmi.GetPropertyValue("ProductName")?.ToString();
             stringBuilder.AppendLine($"序号{i}>>{n}, {m}");
