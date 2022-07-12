@@ -23,7 +23,11 @@ namespace InfoSystem
                 }
                 catch (Exception e)
                 {
-                    new InfoWIn(e.Message+Environment.NewLine+e.StackTrace, this).ShowDialog();
+                    var iw = new InfoWIn(e.Message + Environment.NewLine + e.StackTrace, this);
+                    iw.Show();
+                    iw.menuStrip1.Enabled = false;
+                    iw.richTextBox1.Enabled = false;
+                    MessageBox.Show("引发异常，错误信息已输出到界面，操作已锁定，请关闭重试。", "程序错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }));
             thread.Start();
