@@ -164,7 +164,7 @@ public static class HardwareInfo
                 var n = wmi.GetPropertyValue("Name")?.ToString();
                 var la = (bool)wmi.GetPropertyValue("LocalAccount") ? "本地账户" : "非本地账户";
                 var des = wmi.GetPropertyValue("Description")?.ToString().TrimEnd('。').TrimEnd('.');
-                des = String.IsNullOrEmpty(des) ? "自定义账户" : des;
+                des = String.IsNullOrEmpty(des) ? "无描述" : des;
                 var dis = (bool)wmi.GetPropertyValue("Disabled")?"被禁用": "未禁用";
                 var pa = (bool)wmi.GetPropertyValue("PasswordChangeable") ? "可改密码" : "不可更改密码";
                 var dom = wmi.GetPropertyValue("Domain")?.ToString();
