@@ -46,7 +46,7 @@ public static class HardwareInfo
             var fr = Convert.ToInt64(strt["FreeSpace"]) /1024 / 1024 / 1024;
             // 总空间
             var s = Convert.ToInt64(strt["Size"]) / 1024 / 1024 / 1024;
-            sb.AppendLine($"盘符{n}>>{d}, 文件系统{fs}, 可用空间{fr}GB, 总空间{s}GB");
+            sb.AppendLine($"盘符{n}>>{d}，文件系统{fs}，可用空间{fr}GB，总空间{s}GB");
             sb.AppendLine();
         }
         return sb.ToString();
@@ -69,7 +69,7 @@ public static class HardwareInfo
             var size = Convert.ToInt64(mo["Size"]);
             var sn = mo["SerialNumber"];
             var it = mo["InterfaceType"];
-            sb.AppendLine($"序号{i}>>{m}, {size / 1024 / 1024 / 1024}GB, 序列号{sn}, {it}");
+            sb.AppendLine($"序号{i}>>{m}，{size / 1024 / 1024 / 1024}GB，序列号{sn}，{it}");
             sb.AppendLine();
             i++;
         }
@@ -84,14 +84,14 @@ public static class HardwareInfo
     public static string GetBoardMaker()
     {
 
-        ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_BaseBoard");
+        ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2","SELECT * FROM Win32_BaseBoard");
 
         foreach (ManagementObject wmi in searcher.Get())
         {
             try
             {
-                // 主板型号, 品牌
-                return wmi.GetPropertyValue("Product").ToString()+ ", "+wmi.GetPropertyValue("Manufacturer").ToString();
+                // 主板型号，品牌
+                return wmi.GetPropertyValue("Product").ToString()+ "，"+wmi.GetPropertyValue("Manufacturer").ToString();
             }
 
             catch { }
@@ -108,7 +108,7 @@ public static class HardwareInfo
     public static string GetCdRomDrive()
     {
 
-        ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_CDROMDrive");
+        ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2","SELECT * FROM Win32_CDROMDrive");
 
         foreach (ManagementObject wmi in searcher.Get())
         {
@@ -133,14 +133,14 @@ public static class HardwareInfo
     public static string GetBIOScaption()
     {
 
-        ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_BIOS");
+        ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2","SELECT * FROM Win32_BIOS");
 
         foreach (ManagementObject wmi in searcher.Get())
         {
             try
             {
-                // BIOS型号, 品牌
-                return wmi.GetPropertyValue("Name").ToString()+", "+wmi.GetPropertyValue("Manufacturer").ToString();
+                // BIOS型号，品牌
+                return wmi.GetPropertyValue("Name").ToString()+"，"+wmi.GetPropertyValue("Manufacturer").ToString();
 
             }
             catch { }
@@ -155,7 +155,7 @@ public static class HardwareInfo
     public static string GetAccountName()
     {
 
-        ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_UserAccount");
+        ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2","SELECT * FROM Win32_UserAccount");
         StringBuilder stringBuilder = new StringBuilder();
         foreach (ManagementObject wmi in searcher.Get())
         {
@@ -168,7 +168,7 @@ public static class HardwareInfo
                 var dis = (bool)wmi.GetPropertyValue("Disabled")?"被禁用": "未禁用";
                 var pa = (bool)wmi.GetPropertyValue("PasswordChangeable") ? "可改密码" : "不可更改密码";
                 var dom = wmi.GetPropertyValue("Domain")?.ToString();
-                stringBuilder.AppendLine($"{n}>>{la}, {des}, {pa}, {dis}, 所在域(组织)为{dom}");
+                stringBuilder.AppendLine($"{n}>>{la}，{des}，{pa}，{dis}，所在域(组织)为{dom}");
                 stringBuilder.AppendLine();
             }
             catch { }
@@ -184,7 +184,7 @@ public static class HardwareInfo
     {
         ManagementScope oMs = new ManagementScope();
         ObjectQuery oQuery = new ObjectQuery("SELECT * FROM Win32_PhysicalMemory");
-        ManagementObjectSearcher oSearcher = new ManagementObjectSearcher(oMs, oQuery);
+        ManagementObjectSearcher oSearcher = new ManagementObjectSearcher(oMs,oQuery);
         ManagementObjectCollection oCollection = oSearcher.Get();
 
         StringBuilder sb = new StringBuilder();
@@ -206,7 +206,7 @@ public static class HardwareInfo
                 s = "频率未知";
             }
             
-            sb.AppendLine($"序号{i}>>{indexSize / 1024 / 1024 / 1024}GB, {s}, {m}, {c}");
+            sb.AppendLine($"序号{i}>>{indexSize / 1024 / 1024 / 1024}GB，{s}，{m}，{c}");
             sb.AppendLine();
             i++;
         }
@@ -222,7 +222,7 @@ public static class HardwareInfo
     {
         ManagementScope oMs = new ManagementScope();
         ObjectQuery oQuery = new ObjectQuery("SELECT * FROM Win32_PhysicalMemory");
-        ManagementObjectSearcher oSearcher = new ManagementObjectSearcher(oMs, oQuery);
+        ManagementObjectSearcher oSearcher = new ManagementObjectSearcher(oMs,oQuery);
         ManagementObjectCollection oCollection = oSearcher.Get();
 
         long installedMemSize = 0;
@@ -243,7 +243,7 @@ public static class HardwareInfo
         int MemSlots = 0;
         ManagementScope oMs = new ManagementScope();
         ObjectQuery oQuery2 = new ObjectQuery("SELECT * FROM Win32_PhysicalMemoryArray");
-        ManagementObjectSearcher oSearcher2 = new ManagementObjectSearcher(oMs, oQuery2);
+        ManagementObjectSearcher oSearcher2 = new ManagementObjectSearcher(oMs,oQuery2);
         ManagementObjectCollection oCollection2 = oSearcher2.Get();
         foreach (ManagementObject obj in oCollection2)
         {
@@ -312,7 +312,7 @@ public static class HardwareInfo
             {
                 mac = $"MAC地址暂无";
             }
-            sb.AppendLine($"序号{i}>>{d}, {ip}, {gateway}, {mac}");
+            sb.AppendLine($"序号{i}>>{d}，{ip}，{gateway}，{mac}");
             sb.AppendLine();
             i++;
         }
@@ -326,12 +326,12 @@ public static class HardwareInfo
     public static string GetDisplayAdapters()
     {
 
-        ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_VideoController");
+        ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2","SELECT * FROM Win32_VideoController");
         StringBuilder stringBuilder = new StringBuilder();
         uint i = 1;
         foreach (ManagementObject wmi in searcher.Get())
         {
-            var n = wmi.GetPropertyValue("Name")?.ToString().Replace("(TM)", "™").Replace("(tm)", "™").Replace("(R)", "®").Replace("(r)", "®").Replace("(C)", "©").Replace("(c)", "©");
+            var n = wmi.GetPropertyValue("Name")?.ToString().Replace("(TM)","™").Replace("(tm)","™").Replace("(R)","®").Replace("(r)","®").Replace("(C)","©").Replace("(c)","©");
             var ram = Convert.ToInt64(wmi.GetPropertyValue("AdapterRAM")) / 1024 / 1024 / 1024;
             var chr = wmi.GetPropertyValue("CurrentHorizontalResolution");
             var cvr = wmi.GetPropertyValue("CurrentVerticalResolution");
@@ -339,7 +339,7 @@ public static class HardwareInfo
             var minR = wmi.GetPropertyValue("MinRefreshRate");
             var maxR = wmi.GetPropertyValue("MaxRefreshRate");
             var dv = wmi.GetPropertyValue("DriverVersion");
-            stringBuilder.AppendLine($"序号{i}>>{n}, {ram}GB RAM, 分辨率{chr}x{cvr}, 刷新率{cr}Hz, 最大可设刷新率{maxR}, 最小可设刷新率{minR}, 驱动版本{dv}");
+            stringBuilder.AppendLine($"序号{i}>>{n}，{ram}GB RAM，分辨率{chr}x{cvr}，刷新率{cr}Hz，最大可设刷新率{maxR}，最小可设刷新率{minR}，驱动版本{dv}");
             stringBuilder.AppendLine();
             i++;
                         
@@ -354,15 +354,15 @@ public static class HardwareInfo
     public static string GetSoundAdapters()
     {
 
-        ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_SoundDevice");
+        ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2","SELECT * FROM Win32_SoundDevice");
         StringBuilder stringBuilder = new StringBuilder();
         uint i = 1;
         foreach (ManagementObject wmi in searcher.Get())
         {
-            var n = wmi.GetPropertyValue("Name")?.ToString().Replace("(TM)", "™").Replace("(tm)", "™").Replace("(R)", "®").Replace("(r)", "®").Replace("(C)", "©").Replace("(c)", "©");
+            var n = wmi.GetPropertyValue("Name")?.ToString().Replace("(TM)","™").Replace("(tm)","™").Replace("(R)","®").Replace("(r)","®").Replace("(C)","©").Replace("(c)","©");
             var m = wmi.GetPropertyValue("Manufacturer")?.ToString();
             var pn = wmi.GetPropertyValue("ProductName")?.ToString();
-            stringBuilder.AppendLine($"序号{i}>>{n}, {m}");
+            stringBuilder.AppendLine($"序号{i}>>{n}，{m}");
             stringBuilder.AppendLine();
             i++;
 
@@ -402,8 +402,8 @@ public static class HardwareInfo
         {
             try
             {
-                // Windows 10 专业版, 10.0.0000, 64位
-                return ((string)mo["Caption"]).Trim() + ", " + (string)mo["Version"] + ", " + (string)mo["OSArchitecture"];
+                // Windows 10 专业版，10.0.0000，64位
+                return ((string)mo["Caption"]).Trim() + "，" + (string)mo["Version"] + "，" + (string)mo["OSArchitecture"];
             }
             catch { }
         }
@@ -423,10 +423,10 @@ public static class HardwareInfo
         {
             // 处理器型号,说明,插槽类型,时钟频率
             string name = (string)mo["Name"];
-            name = name.Replace("(TM)", "™").Replace("(tm)", "™").Replace("(R)", "®").Replace("(r)", "®").Replace("(C)", "©").Replace("(c)", "©");
+            name = name.Replace("(TM)","™").Replace("(tm)","™").Replace("(R)","®").Replace("(r)","®").Replace("(C)","©").Replace("(c)","©");
             name = name.TrimEnd(' ');
-            info = name + ", " + (string)mo["Caption"] + ", " + (string)mo["SocketDesignation"]+ "插槽";
-            info += ", "+GetCpuSpeedInGHz()+"GHz";
+            info = name + "，" + (string)mo["Caption"] + "，" + (string)mo["SocketDesignation"]+ "插槽";
+            info += "，"+GetCpuSpeedInGHz()+"GHz";
         }
         return info;
     }
