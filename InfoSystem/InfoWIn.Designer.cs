@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.保存ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.复制到剪贴板ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.flowLayoutPanel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -47,6 +47,32 @@
             this.flowLayoutPanel1.Size = new System.Drawing.Size(884, 712);
             this.flowLayoutPanel1.TabIndex = 0;
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.保存ToolStripMenuItem,
+            this.复制到剪贴板ToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(249, 28);
+            this.menuStrip1.TabIndex = 2;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // 保存ToolStripMenuItem
+            // 
+            this.保存ToolStripMenuItem.Name = "保存ToolStripMenuItem";
+            this.保存ToolStripMenuItem.Size = new System.Drawing.Size(128, 24);
+            this.保存ToolStripMenuItem.Text = "保存为文本文件";
+            this.保存ToolStripMenuItem.Click += new System.EventHandler(this.保存ToolStripMenuItem_Click);
+            // 
+            // 复制到剪贴板ToolStripMenuItem
+            // 
+            this.复制到剪贴板ToolStripMenuItem.Name = "复制到剪贴板ToolStripMenuItem";
+            this.复制到剪贴板ToolStripMenuItem.Size = new System.Drawing.Size(113, 24);
+            this.复制到剪贴板ToolStripMenuItem.Text = "复制到剪贴板";
+            this.复制到剪贴板ToolStripMenuItem.Click += new System.EventHandler(this.复制到剪贴板ToolStripMenuItem_Click);
+            // 
             // richTextBox1
             // 
             this.richTextBox1.BackColor = System.Drawing.Color.DarkSeaGreen;
@@ -59,32 +85,6 @@
             this.richTextBox1.Size = new System.Drawing.Size(884, 681);
             this.richTextBox1.TabIndex = 1;
             this.richTextBox1.Text = "@";
-            // 
-            // menuStrip1
-            // 
-            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.保存ToolStripMenuItem,
-            this.复制到剪贴板ToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(414, 28);
-            this.menuStrip1.TabIndex = 2;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // 保存ToolStripMenuItem
-            // 
-            this.保存ToolStripMenuItem.Name = "保存ToolStripMenuItem";
-            this.保存ToolStripMenuItem.Size = new System.Drawing.Size(143, 24);
-            this.保存ToolStripMenuItem.Text = "保存为记事本文件";
-            this.保存ToolStripMenuItem.Click += new System.EventHandler(this.保存ToolStripMenuItem_Click);
-            // 
-            // 复制到剪贴板ToolStripMenuItem
-            // 
-            this.复制到剪贴板ToolStripMenuItem.Name = "复制到剪贴板ToolStripMenuItem";
-            this.复制到剪贴板ToolStripMenuItem.Size = new System.Drawing.Size(113, 24);
-            this.复制到剪贴板ToolStripMenuItem.Text = "复制到剪贴板";
-            this.复制到剪贴板ToolStripMenuItem.Click += new System.EventHandler(this.复制到剪贴板ToolStripMenuItem_Click);
             // 
             // InfoWIn
             // 

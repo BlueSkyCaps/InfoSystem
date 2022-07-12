@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -49,14 +44,15 @@ namespace InfoSystem
             var res = fIleNameInputWin.ShowDialog();
             if (res == DialogResult.OK)
             {
+                // 使用rtf写字板文件，而不是txt记事本,txt在win7可能不会换行
                 var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), 
-                     _fileName + ".txt");
+                     _fileName + ".rtf");
                 // FileMode.Create存在则覆
                 using (FileStream fs = new FileStream(filePath, FileMode.Create))
                 {
-                    using (StreamWriter stw = new StreamWriter(fs, Encoding.GetEncoding("utf-8")))
+                    using (StreamWriter stw = new StreamWriter(fs, Encoding.UTF8))
                     {
-                        stw.WriteLine(this.richTextBox1.Text);
+                        stw.Write(this.richTextBox1.Text);
                     }
                 }
                 MessageBox.Show("已在您的桌面创建了存储了配置信息的文本文件。");
