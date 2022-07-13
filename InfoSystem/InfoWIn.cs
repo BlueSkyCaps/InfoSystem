@@ -47,16 +47,66 @@ namespace InfoSystem
                 // 使用rtf写字板文件，而不是txt记事本,txt在win7可能不会换行
                 var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), 
                      _fileName + ".rtf");
-                // FileMode.Create存在则覆
-                using (FileStream fs = new FileStream(filePath, FileMode.Create))
+                var shareFilePath = @"\\192.168.99.97\共享文件夹\@配置信息接收\"+ _fileName + ".rtf";
+                // 检测共享文件夹是否存在同名文件
+                if (DetermineReplyFile(shareFilePath))
                 {
-                    using (StreamWriter stw = new StreamWriter(fs, Encoding.UTF8))
+                    var r = MessageBox.Show("文件夹存在同名文件，点击确认将覆盖最新，取消则中止操作。", "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                    if (r!=DialogResult.OK)
                     {
-                        stw.Write(this.richTextBox1.Text);
+                        return;
                     }
                 }
-                MessageBox.Show("已在您的桌面创建了存储了配置信息的文本文件。");
+                var shareSaveFlag = false;
+                try
+                {
+                    // FileMode.Create存在则覆
+                    using (FileStream fs = new FileStream(shareFilePath, FileMode.Create))
+                    {
+                        using (StreamWriter stw = new StreamWriter(fs, Encoding.UTF8))
+                        {
+                            stw.Write(this.richTextBox1.Text);
+                        }
+                    }
+                    MessageBox.Show("已保存在共享文件夹‘@配置信息接收’中。");
+                    shareSaveFlag = true;
+                }
+                catch (Exception){}
+                // 若保存到共享文件夹目录失败，则保存到桌面
+                if (!shareSaveFlag)
+                {
+                    using (FileStream fs = new FileStream(filePath, FileMode.Create))
+                    {
+                        using (StreamWriter stw = new StreamWriter(fs, Encoding.UTF8))
+                        {
+                            stw.Write(this.richTextBox1.Text);
+                        }
+                    }
+                    MessageBox.Show("保存在共享文件夹失败，网络是否连接？已转而保存到桌面。");
+                    shareSaveFlag = true;
+                }
             }
+        }
+
+        /// <summary>
+        /// 存在则true
+        /// </summary>
+        /// <param name="shareFilePath"></param>
+        /// <returns></returns>
+        private bool DetermineReplyFile(string shareFilePath)
+        {
+            try
+            {
+                if (File.Exists(shareFilePath))
+                {
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+            }
+            
+            return false;
         }
     }
 }

@@ -48,9 +48,9 @@ namespace InfoSystem
             sb.AppendLine("-----------------------");
 
             // 计算机账户
-            sb.AppendLine($"账户列表：");
-            sb.AppendLine($"{HardwareInfo.GetAccountName()}");
-            sb.AppendLine("-----------------------");
+            //sb.AppendLine($"账户列表：");
+            //sb.AppendLine($"{HardwareInfo.GetAccountName()}");
+            //sb.AppendLine("-----------------------");
 
 
             // 处理器和时钟频率
