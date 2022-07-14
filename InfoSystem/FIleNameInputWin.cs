@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace InfoSystem
@@ -14,6 +8,7 @@ namespace InfoSystem
         public FIleNameInputWin()
         {
             InitializeComponent();
+            this.comboBox1.SelectedIndex = 0;//默认选中第一项，index为0，而不是空白格的-1
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -30,8 +25,15 @@ namespace InfoSystem
                 MessageBox.Show("请输入内容，或点击取消。");
                 return;
             }
+            if (this.comboBox1.SelectedIndex<=0)
+            {
+                MessageBox.Show("请选择区域，莱普或老厂。");
+                return;
+            }
+               
             DialogResult = DialogResult.OK;
             InfoWIn._fileName = fileName;
+            InfoWIn._areaValue = this.comboBox1.SelectedIndex;
             this.Close();
             this.Dispose();
         }

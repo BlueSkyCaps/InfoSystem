@@ -8,6 +8,8 @@ namespace InfoSystem
     public partial class InfoWIn : Form
     {
         public static string _fileName = null;
+        public static int _areaValue = 0;
+
         public InfoWIn()
         {
             InitializeComponent();
@@ -47,7 +49,8 @@ namespace InfoSystem
                 // 使用rtf写字板文件，而不是txt记事本,txt在win7可能不会换行
                 var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), 
                      _fileName + ".rtf");
-                var shareFilePath = @"\\192.168.99.97\共享文件夹\@配置信息接收\"+ _fileName + ".rtf";
+                var areaDirName = _areaValue == 1 ? "莱普" : "老厂";
+                var shareFilePath = $@"\\192.168.99.97\共享文件夹\@配置信息接收\{areaDirName}\"+ _fileName + ".rtf";
                 // 检测共享文件夹是否存在同名文件
                 if (DetermineReplyFile(shareFilePath))
                 {
@@ -68,7 +71,7 @@ namespace InfoSystem
                             stw.Write(this.richTextBox1.Text);
                         }
                     }
-                    MessageBox.Show("已保存在共享文件夹‘@配置信息接收’中。");
+                    MessageBox.Show($@"已保存在共享文件夹‘@配置信息接收\{areaDirName}’中。");
                     shareSaveFlag = true;
                 }
                 catch (Exception){}
